@@ -1,0 +1,85 @@
+---
+title: "final"
+author: "dhabib"
+date: '2022-06-23'
+output: html_document
+---
+
+#Load in data and packages
+```{r}
+# load libraries (quietly stops all the messages appearing)
+library(readr, quietly = TRUE)
+library(dplyr, quietly = TRUE)
+
+# load imdb and bechdel
+movies_imdb <- read_csv("https://raw.githubusercontent.com/andrewmoles2/rTrainIntroduction/main/r-data-wrangling-1/data/IMDb%20movies.csv")
+
+bechdel <- read_csv("https://raw.githubusercontent.com/andrewmoles2/rTrainIntroduction/main/r-data-wrangling-1/data/raw_bechdel.csv")
+```
+
+```{r}
+```
+
+```{r}
+
+```
+#Dinosaur
+
+```{r}
+dino <- movies_imdb %>%
+  filter(grepl("Jurassic", title)) 
+dino
+
+dbudget <- dino$budget
+dbudget
+
+dino$dbudget <- gsub("\\$ ", "", x = dino$budget)
+
+dino$dbudget <- as.integer(dino$dbudget)
+
+class(dino$dbudget)
+```
+#Plot Rating v Title
+```{r}
+ggplot(dino, aes(x= avg_vote, y= title, color = production_company)) + 
+    geom_point(size=5) +
+  theme_minimal(base_family = "Avenir") +
+  labs(title = "Dinosaur Movies by Rating and Production Company",
+       x = "Title", y = "Rating",
+       caption = "DH MISDI Code Camp")
+```
+# Let's Clean this Up
+```{r}
+ggplot(dino, aes(x= reorder(title, avg_vote), y= avg_vote)) +
+  geom_point() +
+  geom_segment(aes(x = title, xend = title, y = 0, yend = avg_vote ), color = "green") +
+  geom_point(color = "green", size = 4, alpha = 0.6) +
+  theme_light() +
+  coord_flip() +
+  labs(title = "Dinosaur Movies in order of Rank",
+       x = "Title", y = "Average Rating")
+  
+```
+# What about $$
+```{r}
+library(ggimage)
+
+options(scipen = 999)
+
+ggplot(dino, aes(x = avg_vote, y = dbudget)) + geom_image(aes(image = "diplo.svg")) + labs(title = "Budget v Rating", x = "Average Rating", y = "Budget", caption = "Danielle Habib, MISDI Code Camp") 
+  
+```
+#Movies in Order of Rank
+```{r}
+ggplot(dino, aes(x= reorder(title, avg_vote), y= avg_vote)) +
+  geom_point() +
+  geom_segment(aes(x = title, xend = title, y = 0, yend = avg_vote ), color = "green") +
+    geom_image(aes(image = "trex.svg")) +
+  theme_light() +
+  coord_flip() +
+  labs(title = "Dinosaur Movies in order of Rating",
+       x = "Title", y = "Average Rating")
+```
+
+
+
